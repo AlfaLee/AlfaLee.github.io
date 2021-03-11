@@ -483,9 +483,7 @@
                         <div class="card-content article-content">
                             <div class="summary block-with-text">
                                 
-                                    理解HTML 页面内先存储回调函数，当页面内的异步任务结束后，调用 resolve 或 rejecte 方法，resolve 或 reject 方法执行事先存储的回调函数
-过程
-HTML 页面中，Promise 用来包裹异步回调，then 
+                                    理解HTML 页面内的异步任务（如：settimeout）用 Promise 包裹“托管”起来，不影响后面代码执行（js 非阻塞）；HTML 页面内调用 then 或者 catch 方法，其实是将成功和失败的回调函数传递到 Promise.
                                 
                             </div>
                             <div class="publish-info">

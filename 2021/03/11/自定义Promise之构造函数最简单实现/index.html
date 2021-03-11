@@ -468,7 +468,7 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h1><p>HTML 页面内先存储回调函数，当页面内的异步任务结束后，调用 resolve 或 rejecte 方法，resolve 或 reject 方法执行事先存储的回调函数</p>
+                <h1 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h1><p>HTML 页面内的异步任务（如：settimeout）用 Promise 包裹“托管”起来，不影响后面代码执行（js 非阻塞）；HTML 页面内调用 then 或者 catch 方法，其实是将成功和失败的回调函数传递到 Promise.js 中;Promise.js 存储 HTML 页面传递过来的回调函数，当页面内的异步任务结束后，调用 resolve 或 rejecte 方法，resolve 或 reject 方法执行事先存储的回调函数。</p>
 <h1 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h1><ul>
 <li>HTML 页面中，Promise 用来包裹异步回调，then 方法是同步执行<ul>
 <li>then 方法的调用用来存储成功和失败的回调函数</li>
@@ -477,7 +477,7 @@
 </li>
 <li>Promise.js 模块，resolve 或 rejecte 方法调用<ul>
 <li>resolve 或 rejecte 方法改变状态</li>
-<li>resolve 或 rejecte 方法执行一开始 HTML 同步执行时候存储的回调函数</li>
+<li>resolve 或 rejecte 方法执行一开始 HTML 同步执行时候传递到 Promise 模块存储起来的回调函数</li>
 </ul>
 </li>
 </ul>
