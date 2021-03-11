@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="手写Promise之Promise整体架构, AlfaLeeの博客">
+    <meta name="keywords" content="自定义Promise之构造函数最简单实现, AlfaLeeの博客">
     <meta name="description" content="好好学习，天天向上">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>手写Promise之Promise整体架构 | AlfaLeeの博客</title>
+    <title>自定义Promise之构造函数最简单实现 | AlfaLeeの博客</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/18.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">手写Promise之Promise整体架构</h1>
+                    <h1 class="description center-align post-title">自定义Promise之构造函数最简单实现</h1>
                 </div>
             </div>
         </div>
@@ -468,24 +468,21 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="自定义-Promise-函数"><a href="#自定义-Promise-函数" class="headerlink" title="自定义 Promise 函数"></a>自定义 Promise 函数</h1><p>ES5 中模块定义方法：匿名函数自调用（或者自调用函数表达式或者函数表达式自调用）即 IIFE</p>
-<ol>
-<li><p>Promise 构造函数</p>
+                <h1 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h1><p>HTML 页面内先存储回调函数，当页面内的异步任务结束后，调用 resolve 或 rejecte 方法，resolve 或 reject 方法执行事先存储的回调函数</p>
+<h1 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h1><ul>
+<li>HTML 页面中，Promise 用来包裹异步回调，then 方法是同步执行<ul>
+<li>then 方法的调用用来存储成功和失败的回调函数</li>
+<li>Promise 内包裹的异步回调中调用 resolve 或 rejecte 方法</li>
+</ul>
 </li>
-<li><p>Promise 原型对象的 then()</p>
+<li>Promise.js 模块，resolve 或 rejecte 方法调用<ul>
+<li>resolve 或 rejecte 方法改变状态</li>
+<li>resolve 或 rejecte 方法执行一开始 HTML 同步执行时候存储的回调函数</li>
+</ul>
 </li>
-<li><p>Promise 原型对象的 catch()</p>
-</li>
-<li><p>Promise 函数对象方法 resolve()</p>
-</li>
-<li><p>Promise 函数对象方法 reject()</p>
-</li>
-<li><p>Promise 函数对象的 all 方法</p>
-</li>
-<li><p>Promise 函数对象的 race 方法</p>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 自定义Promise函数 模块</span><br><span class="line"> * ES5中模块定义方法：匿名函数自调用（或者自调用函数表达式或者函数表达式自调用）即IIFE</span><br><span class="line"> *&#x2F;</span><br><span class="line">(function (window) &#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Promise构造函数</span><br><span class="line">     * excutor:执行器函数(同步执行)</span><br><span class="line">     *&#x2F;</span><br><span class="line">    function Promise(excutor) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Promise原型对象的then()</span><br><span class="line">     * 指定成功和失败的回调函数</span><br><span class="line">     * 返回一个新的Promise对象</span><br><span class="line">     *&#x2F;</span><br><span class="line">    Promise.prototype.then &#x3D; function (onResolved, onRejected) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Promise原型对象的catch()</span><br><span class="line">     * 指定失败的回调函数</span><br><span class="line">     * 返回一个新的Promise对象</span><br><span class="line">     *&#x2F;</span><br><span class="line">    Promise.prototype.catch &#x3D; function (onRejected) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Promise函数对象方法 resolve()</span><br><span class="line">     * 返回一个指定结果的成功的promise</span><br><span class="line">     *&#x2F;</span><br><span class="line">    Promise.resolve(value)&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Promise函数对象方法reject()</span><br><span class="line">     * 返回一个指定reason的失败的promise</span><br><span class="line">     *&#x2F;</span><br><span class="line">    Promise.reject(reason)&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Promise函数对象的all方法</span><br><span class="line">     * 返回一个promise，只有当所有promise都成功时才成功，否则只要有一个失败的就失败</span><br><span class="line">     *&#x2F;</span><br><span class="line">    Promise.all &#x3D; function (promises) &#123; &#125;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Promise函数对象的race方法</span><br><span class="line">     * 返回一个promise，其结果由第一个完成的promise决定</span><br><span class="line">     *&#x2F;</span><br><span class="line">    Promise.race &#x3D; function (promises) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;向外暴露Promise函数</span><br><span class="line">    window.Promise &#x3D; Promise;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;)(window)</span><br></pre></td></tr></table></figure>
+</ul>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><h2 id="JavaScript-部分"><a href="#JavaScript-部分" class="headerlink" title="JavaScript 部分"></a>JavaScript 部分</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 自定义Promise函数 模块</span><br><span class="line"> * ES5中模块定义方法：匿名函数自调用（或者自调用函数表达式或者函数表达式自调用）即IIFE</span><br><span class="line"> *&#x2F;</span><br><span class="line">(function (window) &#123;</span><br><span class="line">  &#x2F;**</span><br><span class="line">   * Promise构造函数</span><br><span class="line">   * excutor:执行器函数(同步执行)</span><br><span class="line">   *&#x2F;</span><br><span class="line">  function Promise(excutor) &#123;</span><br><span class="line">    &#x2F;&#x2F;1、构造函数实现</span><br><span class="line">    &#x2F;&#x2F;1.7构造函数测试——将当前promise对象保存起来，存储self</span><br><span class="line">    const self &#x3D; this;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;1.3思考promise实例对象有怎样的属性？</span><br><span class="line">    &#x2F;&#x2F;1.3.1存储状态的属性（给promise对象指定status属性，初始值为pending）</span><br><span class="line">    self.status &#x3D; &quot;pending&quot;;</span><br><span class="line">    &#x2F;&#x2F;1.3.2存储数据结果值的属性（给给promise对象指定一个用于存储结果数据的属性）</span><br><span class="line">    self.data &#x3D; undefined;</span><br><span class="line">    &#x2F;&#x2F;1.3.3存储回调函数，每个元素的结构：&#123;onResolved()&#123;&#125;,onRejected()&#123;&#125;&#125;</span><br><span class="line">    self.callbacks &#x3D; [];</span><br><span class="line"></span><br><span class="line">    function resolve(value) &#123;</span><br><span class="line">      &#x2F;&#x2F;1.2定义resolve和reject两个方法</span><br><span class="line">      &#x2F;&#x2F;1.5 还有一个问题，不能反复的resolve，思考如果当前状态不是pending，直接结束，如何限制状态只改一次</span><br><span class="line">      if (self.status !&#x3D;&#x3D; &quot;pending&quot;) &#123;</span><br><span class="line">        return;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      &#x2F;&#x2F;1.4思考执行resolve和reject方法需要做什么？</span><br><span class="line">      &#x2F;&#x2F;1.4.1将状态改为resolved</span><br><span class="line">      self.status &#x3D; &quot;resolved&quot;;</span><br><span class="line">      &#x2F;&#x2F;1.4.2保存value数据</span><br><span class="line">      self.data &#x3D; value;</span><br><span class="line"></span><br><span class="line">      &#x2F;**</span><br><span class="line">       * 1.4.3调用resolve的时候可能已经指定了回调函数，如果有待执行的callback函数，异步执行回调，放入回调队列</span><br><span class="line">       * 立即异步执行回调函数onResolved</span><br><span class="line">       * callbackObj为包含两个回调函数的对象</span><br><span class="line">       * 回调函数放入到队列中,使用settimeout函数模拟</span><br><span class="line">       *&#x2F;</span><br><span class="line">      if (self.callbacks.length &gt; 0) &#123;</span><br><span class="line">        &#x2F;&#x2F; callbackObj.onResolved();&#x2F;&#x2F;这样还是同步，未放入队列中</span><br><span class="line">        setTimeout(() &#x3D;&gt; &#123;</span><br><span class="line">          &#x2F;&#x2F;模拟异步回调，放入队列中，执行所有成功回调</span><br><span class="line">          self.callbacks.forEach((callbacksObj) &#x3D;&gt; &#123;</span><br><span class="line">            callbacksObj.onResolved(value); &#x2F;&#x2F;调用成功的回调，怎么能不传参数呢</span><br><span class="line">          &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function reject(reason) &#123;</span><br><span class="line">      &#x2F;&#x2F;1.3两函数形参value和reason</span><br><span class="line">      if (self.status !&#x3D;&#x3D; &quot;pending&quot;) &#123;</span><br><span class="line">        return;</span><br><span class="line">      &#125;</span><br><span class="line">      self.status &#x3D; &quot;rejected&quot;;</span><br><span class="line">      self.data &#x3D; reason;</span><br><span class="line">      if (self.callbacks.length &gt; 0) &#123;</span><br><span class="line">        setTimeout(() &#x3D;&gt; &#123;</span><br><span class="line">          self.callbacks.forEach((callbacksObj) &#x3D;&gt; &#123;</span><br><span class="line">            callbacksObj.onRejected(reason);</span><br><span class="line">          &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;1.6既没调resolve也没调rejecte，执行器抛出异常，promise状态变为失败，有抛出异常就有捕获异常</span><br><span class="line">    try &#123;</span><br><span class="line">      excutor(resolve, reject); &#x2F;&#x2F;1.1立即同步执行执行器，需要传入两参数</span><br><span class="line">    &#125; catch (error) &#123;</span><br><span class="line">      &#x2F;&#x2F;如果执行器抛出异常，promise对象变为rejected</span><br><span class="line">      reject(error);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  &#x2F;**</span><br><span class="line">   * Promise原型对象的then()</span><br><span class="line">   * 指定成功和失败的回调函数</span><br><span class="line">   * 返回一个新的Promise对象</span><br><span class="line">   *&#x2F;</span><br><span class="line">  Promise.prototype.then &#x3D; function (onResolved, onRejected) &#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 最简单实现</span><br><span class="line">     * 假设当前状态还是pending状态，不能执行回调函数，</span><br><span class="line">     * 状态不由.then来改，只能把两个回调函数存储起来</span><br><span class="line">     *&#x2F;</span><br><span class="line">    const self &#x3D; this;</span><br><span class="line">    self.callbacks.push(&#123;</span><br><span class="line">      onResolved,</span><br><span class="line">      onRejected,</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  &#x2F;**</span><br><span class="line">   * Promise原型对象的catch()</span><br><span class="line">   * 指定失败的回调函数</span><br><span class="line">   * 返回一个新的Promise对象</span><br><span class="line">   *&#x2F;</span><br><span class="line">  Promise.prototype.catch &#x3D; function (onRejected) &#123;&#125;;</span><br><span class="line">  &#x2F;**</span><br><span class="line">   * Promise函数对象方法 resolve()</span><br><span class="line">   * 返回一个指定结果的成功的promise</span><br><span class="line">   *&#x2F;</span><br><span class="line">  Promise.resolve &#x3D; function (value) &#123;&#125;;</span><br><span class="line">  &#x2F;**</span><br><span class="line">   * Promise函数对象方法reject()</span><br><span class="line">   * 返回一个指定reason的失败的promise</span><br><span class="line">   *&#x2F;</span><br><span class="line">  Promise.reject &#x3D; function (reason) &#123;&#125;;</span><br><span class="line">  &#x2F;**</span><br><span class="line">   * Promise函数对象的all方法</span><br><span class="line">   * 返回一个promise，只有当所有promise都成功时才成功，否则只要有一个失败的就失败</span><br><span class="line">   *&#x2F;</span><br><span class="line">  Promise.all &#x3D; function (promises) &#123;&#125;;</span><br><span class="line">  &#x2F;**</span><br><span class="line">   * Promise函数对象的race方法</span><br><span class="line">   * 返回一个promise，其结果由第一个完成的promise决定</span><br><span class="line">   *&#x2F;</span><br><span class="line">  Promise.race &#x3D; function (promises) &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F;向外暴露Promise函数</span><br><span class="line">  window.Promise &#x3D; Promise;</span><br><span class="line">&#125;)(window);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="HTML-部分"><a href="#HTML-部分" class="headerlink" title="HTML 部分"></a>HTML 部分</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang&#x3D;&quot;en&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv&#x3D;&quot;X-UA-Compatible&quot; content&#x3D;&quot;IE&#x3D;edge&quot;&gt;</span><br><span class="line">    &lt;meta name&#x3D;&quot;viewport&quot; content&#x3D;&quot;width&#x3D;device-width, initial-scale&#x3D;1.0&quot;&gt;</span><br><span class="line">    &lt;title&gt;自定义Promise&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;ol&gt;</span><br><span class="line">        &lt;li&gt;1、自定义Promise——Promise整体框架&lt;&#x2F;li&gt;</span><br><span class="line">        &lt;li&gt;2、自定义Promise——Promise构造函数实现&lt;&#x2F;li&gt;</span><br><span class="line">    &lt;&#x2F;ol&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;.&#x2F;lib&#x2F;Promise.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        const p &#x3D; new Promise((resolve, reject) &#x3D;&gt; &#123;</span><br><span class="line">            setTimeout(() &#x3D;&gt; &#123;</span><br><span class="line">                &#x2F;&#x2F; resolve(1);&#x2F;&#x2F;value&#x2F;&#x2F;1.测试成功</span><br><span class="line">                reject(2);&#x2F;&#x2F;reason&#x2F;&#x2F;2测试失败</span><br><span class="line">                &#x2F;&#x2F;下面log语句先执行，后面then方法里的回调后执行才验证时异步执行</span><br><span class="line">                console.log(&#39;reject改变状态&#39;);&#x2F;&#x2F;测试是同步还是异步？？？</span><br><span class="line">            &#125;, 100);</span><br><span class="line">        &#125;);</span><br><span class="line">        p.then(value &#x3D;&gt; &#123;</span><br><span class="line">            console.log(&#39;onResolved()1&#39;, value);</span><br><span class="line">        &#125;, reason &#x3D;&gt; &#123;</span><br><span class="line">            console.log(&#39;onReject()1&#39;, reason);</span><br><span class="line">        &#125;);</span><br><span class="line">        p.then(value &#x3D;&gt; &#123;</span><br><span class="line">            console.log(&#39;onResolved()2&#39;, value);</span><br><span class="line">        &#125;, reason &#x3D;&gt; &#123;</span><br><span class="line">            console.log(&#39;onReject()2&#39;, reason);</span><br><span class="line">        &#125;);</span><br><span class="line">    &lt;&#x2F;script&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
                 
             </div>
             <hr/>
@@ -511,7 +508,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/03/11/%E6%89%8B%E5%86%99Promise%E4%B9%8BPromise%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/">http://example.com/2021/03/11/%E6%89%8B%E5%86%99Promise%E4%B9%8BPromise%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/</a>
+                    <a href="http://example.com/2021/03/11/%E8%87%AA%E5%AE%9A%E4%B9%89Promise%E4%B9%8B%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%9C%80%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/">http://example.com/2021/03/11/%E8%87%AA%E5%AE%9A%E4%B9%89Promise%E4%B9%8B%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%9C%80%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -722,9 +719,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/03/11/%E8%87%AA%E5%AE%9A%E4%B9%89Promise%E4%B9%8B%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%9C%80%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/">
                     <div class="card-image">
@@ -742,9 +740,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-11
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-11
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -753,6 +751,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -771,13 +770,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/03/09/Promise%E7%90%86%E8%A7%A3/">
+                <a href="/2021/03/11/%E6%89%8B%E5%86%99Promise%E4%B9%8BPromise%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="Promise理解">
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="手写Promise之Promise整体架构">
                         
-                        <span class="card-title">Promise理解</span>
+                        <span class="card-title">手写Promise之Promise整体架构</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -788,7 +787,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-09
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-11
                             </span>
                         <span class="publish-author">
                             
